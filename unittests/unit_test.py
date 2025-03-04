@@ -25,8 +25,8 @@ class TestFindCheapestFlight(unittest.TestCase):
 
     def test_no_valid_path_due_to_stop_limit(self):
         """Test when a path exists but exceeds stop limit"""
-        cost, route = find_cheapest_flight(self.flights, 0, 2, 0)  # No stops allowed
-        self.assertEqual(cost, 300)  # Direct flight is the only option
+        cost, route = find_cheapest_flight(self.flights, 0, 2, 0) 
+        self.assertEqual(cost, 300)
         self.assertEqual(route, "0 - 300 -> 2")
 
     def test_single_city_trivial_case(self):
@@ -47,6 +47,25 @@ class TestFindCheapestFlight(unittest.TestCase):
         cost, route = find_cheapest_flight(flights, 0, 2, 2)
         self.assertEqual(cost, 200)
         self.assertEqual(route, "0 - 100 -> 1 - 50 -> 3 - 50 -> 2")
+
+    def test_invalid_route(self):
+        """Test when an invalid route is requested"""
+        cost, route = find_cheapest_flight(self.flights, 'A', 'B', 1)
+        self.assertEqual(cost, -1)
+        self.assertEqual(route, "No valid route found")
+        
+    def test_named_route(self):
+        """Test using named nodes"""
+        flights = [
+            {"from": 'A', "to": 'B', "price": 100},
+            {"from": 'B', "to": 'C', "price": 200},
+            {"from": 'A', "to": 'C', "price": 500},
+            {"from": 'B', "to": 'D', "price": 50},
+            {"from": 'D', "to": 'C', "price": 50}
+        ]
+        cost, route = find_cheapest_flight(flights, 'A', 'C', 2)
+        self.assertEqual(cost, 200)
+        self.assertEqual(route, "A - 100 -> B - 50 -> D - 50 -> C")
 
 if __name__ == "__main__":
     unittest.main()
